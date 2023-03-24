@@ -1,0 +1,53 @@
+function img = HSI_RGB(imgSource)
+
+%Get each value (H,S,I) from each channel
+ H=imgSource(:,:,1);  
+ S=imgSource(:,:,2);  
+ I=imgSource(:,:,3);  
+ 
+ %Convert Hue into the range [0 360]  
+ H=H*360;                                               
+ 
+ %Preallocate the R,G and B components  
+ R=zeros(size(H));  
+ G1=zeros(size(H));  
+ B1=zeros(size(H));  
+ RGB1=zeros([size(H),3]);  
+ 
+ %RG Sector(0<=H<120)  
+ %When H is in the above sector, the RGB components equations are  
+    
+ B1(H<120)=I(H<120).*(1-S(H<120));  
+ R(H<120)=I(H<120).*(1+((S(H<120).*cosd(H(H<120)))./cosd(60-H(H<120))));  
+ G1(H<120)=3.*I(H<120)-(R(H<120)+B1(H<120));  
+    
+ %GB Sector(120<=H<240)  
+ %When H is in the above sector, the RGB components equations are  
+    
+ %Subtract 120 from Hue  
+ H1=H-120;  
+    
+ R(H>=120&H<240)=I(H>=120&H<240).*(1-S(H>=120&H<240));  
+ G1(H>=120&H<240)=I(H>=120&H<240).*(1+((S(H>=120&H<240).*cosd(H1(H>=120&H<240)))./cosd(60-H1(H>=120&H<240))));  
+ B1(H>=120&H<240)=3.*I(H>=120&H<240)-(R(H>=120&H<240)+G1(H>=120&H<240));  
+    
+ %BR Sector(240<=H<=360)  
+ %When H is in the above sector, the RGB components equations are  
+    
+ %Subtract 240 from Hue  
+ H1=H-240;  
+   
+ G1(H>=240&H<=360)=I(H>=240&H<=360).*(1-S(H>=240&H<=360));  
+ B1(H>=240&H<=360)=I(H>=240&H<=360).*(1+((S(H>=240&H<=360).*cosd(H1(H>=240&H<=360)))./cosd(60-H1(H>=240&H<=360))));  
+ R(H>=240&H<=360)=3.*I(H>=240&H<=360)-(G1(H>=240&H<=360)+B1(H>=240&H<=360));  
+   
+ %Form RGB Image  
+ RGB1(:,:,1)=R;  
+ RGB1(:,:,2)=G1;  
+ RGB1(:,:,3)=B1;  
+  
+ %Represent the image in the range [0 255]  
+ RGB1=im2uint8(RGB1);  
+ img = RGB1;
+
+end

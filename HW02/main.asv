@@ -1,0 +1,11 @@
+clc
+clear all
+close all
+
+imgSource = imread('colorImg2.bmp');
+figure,imshow(imgSource);   title('RGB Image');
+
+imgResult = RGB_HSI(imgSource);
+imgResult1 =HSI_RGB(imgResult);
+
+figure,imshow(imgResult1);   title('Result Image');

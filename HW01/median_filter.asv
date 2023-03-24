@@ -1,0 +1,33 @@
+function img = median_filter(imgSource) %Function for Median Filter
+
+scaleImg=zeros(size(imgSource)+4);  
+
+    B=zeros(size(imgSource));
+    
+    % Expand Image
+    for x=1:size(imgSource,1)
+      for y=1:size(imgSource,2)
+           scaleImg(x+2,y+2)=imgSource(x,y);
+      end
+    end
+     
+    % Generating median mask
+    for i= 1:size(scaleImg,1)-3
+        for j=1:size(scaleImg,2)-3
+            window=zeros(16,1);
+            inc=1;
+            for x=1:4
+                for y=1:4
+                    window(inc)=scaleImg(i+x-1,j+y-1);
+                    inc=inc+1;
+                end
+            end
+       
+        med=sort(window);
+        %Store the median result into matrix element
+        B(i,j)=med(5);       
+    end
+    end
+%Convert Into 8 bit Image
+img = uint8(B);   
+end
